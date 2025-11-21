@@ -1,9 +1,12 @@
 package com.sanawulai.ecommerceapi.model;
 
-import javax.annotation.processing.Generated;
+import jakarta.persistence.*;
 
+@Entity
 public class Category {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String categoryName;
 
