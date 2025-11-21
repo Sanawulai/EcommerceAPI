@@ -2,10 +2,13 @@ package com.sanawulai.ecommerceapi.Service.Impl;
 
 import com.sanawulai.ecommerceapi.Service.CategoryService;
 import com.sanawulai.ecommerceapi.model.Category;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -28,11 +31,29 @@ public class CategoryServiceImpl implements CategoryService {
     public String deleteCategory(long categoryId) {
         Category category = categories.stream()
                 .filter(c->c.getCategoryId()==categoryId)
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found"));
         if(category==null){
             return "Category Id: "+categoryId + " not found";
         }
         categories.remove(category);
         return "Category Id: "+categoryId + " deleted succesfully";
     }
+
+    @Override
+    public Category updateCategory(Category category, Long categoryId) {
+        Optional<Category> optionalCategory = categories.stream()
+                .filter(c->c.getCategoryId()==categoryId)
+                .findFirst();
+        if(optionalCategory.isPresent()){
+        Category existingCategory = optionalCategory.get();
+        existingCategory.setCategoryName(category.getCategoryName());
+        return existingCategory;
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not found");
+        }
+
+
+    }
+
 }
