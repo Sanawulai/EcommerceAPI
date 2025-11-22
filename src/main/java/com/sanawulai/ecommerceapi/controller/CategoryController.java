@@ -53,6 +53,7 @@ public class CategoryController {
             return new ResponseEntity<>("Category with category id: "+categoryId+" updated succesfully", HttpStatus.OK);
         }catch (ResponseStatusException e){
             return new ResponseEntity<>(e.getReason(),e.getStatusCode());
+
         }
     }
 }

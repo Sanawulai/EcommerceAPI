@@ -1,6 +1,8 @@
 package com.sanawulai.ecommerceapi.Service.Impl;
 
 import com.sanawulai.ecommerceapi.Service.CategoryService;
+
+import com.sanawulai.ecommerceapi.exception.ResourceNotFoundException;
 import com.sanawulai.ecommerceapi.model.Category;
 import com.sanawulai.ecommerceapi.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String deleteCategory(long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Category","categoryId",categoryId));
 
         categoryRepository.delete(category);
         return "Category Id: "+categoryId + " deleted succesfully";
@@ -46,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Category category, Long categoryId) {
         Optional<Category>savedCategoryOptional = categoryRepository.findById(categoryId);
         Category savedCategory = savedCategoryOptional
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Category","categoryId",categoryId));
 
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);

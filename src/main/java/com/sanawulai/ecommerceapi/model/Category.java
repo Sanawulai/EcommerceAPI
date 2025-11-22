@@ -19,7 +19,6 @@ public class Category {
     private Long categoryId;
 
     @NotBlank
-    @Size(min = 5)
     private String categoryName;
 
 }
