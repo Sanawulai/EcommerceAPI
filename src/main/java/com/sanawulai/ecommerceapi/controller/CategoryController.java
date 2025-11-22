@@ -2,6 +2,7 @@ package com.sanawulai.ecommerceapi.controller;
 
 import com.sanawulai.ecommerceapi.Service.CategoryService;
 import com.sanawulai.ecommerceapi.model.Category;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class CategoryController {
     }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category created succesfully", HttpStatus.CREATED);
     }
