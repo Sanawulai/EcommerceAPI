@@ -2,7 +2,10 @@ package com.sanawulai.ecommerceapi.controller;
 
 import com.sanawulai.ecommerceapi.Service.CategoryService;
 import com.sanawulai.ecommerceapi.model.Category;
+import com.sanawulai.ecommerceapi.payload.CategoryResponse;
+import com.sanawulai.ecommerceapi.repository.CategoryRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +16,16 @@ import java.util.List;
 @RequestMapping("/api")
 public class CategoryController {
 
+    @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories,HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories() {
+        CategoryResponse categoryResponse = categoryService.getAllCategories();
+        return new ResponseEntity<>(categoryResponse,HttpStatus.OK);
     }
 
     @PostMapping("/public/categories")

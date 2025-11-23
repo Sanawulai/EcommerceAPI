@@ -5,29 +5,41 @@ import com.sanawulai.ecommerceapi.Service.CategoryService;
 import com.sanawulai.ecommerceapi.exception.APIException;
 import com.sanawulai.ecommerceapi.exception.ResourceNotFoundException;
 import com.sanawulai.ecommerceapi.model.Category;
+import com.sanawulai.ecommerceapi.payload.CategoryDTO;
+import com.sanawulai.ecommerceapi.payload.CategoryResponse;
 import com.sanawulai.ecommerceapi.repository.CategoryRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
+    @Autowired
     private CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    @Autowired
+    private ModelMapper modelMapper;
+
+
 
 
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
             throw new APIException("You havent created any category yet.. Please try again this time around creating a category");
         }
-        return categories;
+        List<CategoryDTO> categoryDTOS = categories
+                .stream().map(category -> modelMapper
+                        .map(category, CategoryDTO.class)).toList();
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOS);
+        return categoryResponse;
     }
 
     @Override
