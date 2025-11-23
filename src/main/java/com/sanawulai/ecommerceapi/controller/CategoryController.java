@@ -22,6 +22,11 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @GetMapping("/echo")
+    public ResponseEntity<String> echoMessage(@RequestParam(name = "message") String message){
+        return new ResponseEntity<>("Echoed message: "+ message,HttpStatus.OK);
+    }
+
 
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse> getAllCategories() {
@@ -31,7 +36,6 @@ public class CategoryController {
 
     @PostMapping("/public/categories")
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        categoryService.createCategory(categoryDTO);
         CategoryDTO savedCategoryDTO = categoryService.createCategory(categoryDTO);
         return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
     }
