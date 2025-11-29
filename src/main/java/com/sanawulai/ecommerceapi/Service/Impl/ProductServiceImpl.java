@@ -30,7 +30,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO addProduct(Long categoryId, Product product) {
 
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         product.setCategory(category);
         product.setImage("default.png");
@@ -42,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getAllProducts() {
+
         List<Product> products = productRepository.findAll();
         List<ProductDTO> productDTOS = products
                 .stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
@@ -53,13 +55,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse searchByCategory(long categoryId) {
 
-        // Ensure the category exists before searching
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category category = categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        // Query directly by category id to avoid issues with detached Category entities
-        List<Product> products = productRepository.findByCategoryCategoryIdOrderByPriceAsc(categoryId);
-
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
         List<ProductDTO> productDTOS = products
                 .stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         ProductResponse productResponse = new ProductResponse();
