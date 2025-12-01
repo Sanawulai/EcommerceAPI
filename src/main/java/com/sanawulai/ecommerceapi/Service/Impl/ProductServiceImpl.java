@@ -121,25 +121,46 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO updateProductImage(long productId, MultipartFile image) throws IOException {
 
-        //Get the product form the db
+        //Get the product from the db
         Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
         //upload image to server
         //Get the file name of uploaded image
-        String path = "/images/";
+        String path = "images/";
         String fileName = uploadImage(path,image);
 
         //updating the new file name to the product
         productFromDb.setImage(fileName);
 
-        //save updated product
+        //save an updated product
         Product updatedProduct = productRepository.save(productFromDb);
 
-        //return DTO after mapping product to DTO
+        //return DTO after mapping the product to DTO
         return modelMapper.map(updatedProduct,ProductDTO.class);
     }
 
+    private String uploadImage(String path, MultipartFile file) throws IOException {
 
+        //File names of current / original file
+        String originalFileName = file.getOriginalFilename();
+
+        //Generate a file name
+        String randomId = UUID.randomUUID().toString();
+        String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
+        String filePath = path + File.separator + fileName;
+        //check if a path exists and creates
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+
+        //Upload to server
+        Files.copy(file.getInputStream(),Paths.get(filePath));
+
+        //return file name
+        return fileName;
+    }
 
 
 }
